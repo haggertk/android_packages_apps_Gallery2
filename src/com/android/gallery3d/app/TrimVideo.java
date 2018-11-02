@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+import android.support.v4.content.FileProvider;
 
 import org.codeaurora.gallery.R;
 import com.android.gallery3d.util.SaveVideoFileInfo;
@@ -44,6 +45,7 @@ import com.android.gallery3d.util.SaveVideoFileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 public class TrimVideo extends Activity implements
         MediaPlayer.OnErrorListener,
@@ -321,11 +323,12 @@ public class TrimVideo extends Activity implements
                             mProgress = null;
                             // Show the result only when the activity not stopped.
                             Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-                            Uri fileUri = FileProvider.getUriForFile(getApplicationContext(),
-                                    FILE_PROVIDER_AUTHORITY, mDstFileInfo.mFile);
-                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                            intent.setDataAndType(fileUri, "video/*");
+                            intent.setDataAndType(
+                                    FileProvider.getUriForFile(mContext,
+                                            "com.android.gallery3d.fileprovider",
+                                            mDstFileInfo.mFile), "video/*");
                             intent.putExtra(MediaStore.EXTRA_FINISH_ON_COMPLETION, false);
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             startActivity(intent);
                             finish();
                         }

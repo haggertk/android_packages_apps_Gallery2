@@ -160,11 +160,18 @@ public class ImageCrop extends ImageShow {
     }
 
     public void applyFreeAspect() {
-        mCropObj.unsetAspectRatio();
+        if (mCropObj != null) {
+            // click event shouldn't occur before ondraw()
+            mCropObj.unsetAspectRatio();
+        }
         invalidate();
     }
 
     public void applyOriginalAspect() {
+        if (mCropObj != null) {
+            // click event shouldn't occur before ondraw()
+            return;
+        }
         RectF outer = mCropObj.getOuterBounds();
         float w = outer.width();
         float h = outer.height();
@@ -181,6 +188,10 @@ public class ImageCrop extends ImageShow {
     public void applyAspect(float x, float y) {
         if (x <= 0 || y <= 0) {
             throw new IllegalArgumentException("Bad arguments to applyAspect");
+        }
+        if (mCropObj != null) {
+            // click event shouldn't occur before ondraw()
+            return;
         }
         // If we are rotated by 90 degrees from horizontal, swap x and y
         if (GeometryMathUtils.needsDimensionSwap(mGeometry.rotation)) {
